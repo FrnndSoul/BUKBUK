@@ -338,18 +338,27 @@ h1 {
 }
 
 
-/* App version: tiny and centered */
-.app-version {
-    position: fixed;
-    left: 50%;
-    bottom: 5px;
-    transform: translateX(-50%);
-    font-size: 8px;
-    line-height: 1;
-    font-weight: 400;
-    color: rgba(255, 255, 255, 0.6);
-    text-align: center;
-    white-space: nowrap;
-    z-index: 9999;
-    pointer-events: none;
+
+/* App version - fixed at bottom center */
+html body div.app-version {
+    position: fixed !important;
+    inset: auto 0 5px 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+
+    font-family: "Poppins", sans-serif !important;
+    font-size: 8px !important;
+    line-height: 1 !important;
+    font-weight: 400 !important;
+    text-align: center !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+
+    z-index: 99999 !important;
+    pointer-events: none !important;
 }
