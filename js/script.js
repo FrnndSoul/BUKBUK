@@ -561,32 +561,6 @@ function renderSelectedForm() {
   console.log("Rendered template:", templateKey);
 }
 
-
-
-  fetch(`../api/get_request_fields.php?request_type_id=${requestTypeId}`)
-    .then(res => res.json())
-    .then(fields => {
-      if (!fields.length) {
-        formContainer.innerHTML = '<p class="text-center">No fields configured.</p>';
-        return;
-      }
-
-      // 1️⃣ Render the form HTML
-      renderDynamicKioskForm(fields);
-
-      initializeDatePickers(); // ← keeps flatpickr working
-      wireAutoAge();       // ← wire up bday -> age behavior
-      initFormBehaviors();
-    })
-    .catch(err => {
-      console.error(err);
-      formContainer.innerHTML = '<p class="text-danger">Failed to load form.</p>';
-    });
-
-  
-
-
-
 // ---------- Auto-age calculation from birthday ----------
 function computeAgeFromDOB(dobString) {
   if (!dobString) return '';
