@@ -4,9 +4,9 @@ header("Content-Type: application/json");
 // DB connection
 $conn = new mysqli(
   "153.92.15.84",
-  "u279021732_brgyugong",
-  "Ds#XH1I#t",
-  "u279021732_brgyugong"
+  "u279021732_brgyadmin_db",
+  "JYEj8JIW8w*",
+  "u279021732_brgyadmin_db"
 );
 
 if ($conn->connect_error) {
