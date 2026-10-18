@@ -478,20 +478,27 @@ const TEMPLATE_REGISTRY = {
 ========================================================= */
 
 
+
 function renderSelectedForm() {
   if (!requestTypeSelect || !formContainer) return;
 
   const selectedOption =
     requestTypeSelect.options[requestTypeSelect.selectedIndex];
 
-  const slug = (selectedOption?.dataset.slug || "")
-    .trim()
-    .toLowerCase();
-
-  if (!requestTypeSelect.value) {
+  if (!requestTypeSelect.value || !selectedOption) {
     formContainer.innerHTML = "";
     return;
   }
+
+  const slug = (selectedOption.dataset.slug || "")
+    .trim()
+    .toLowerCase()
+    .replace(/_/g, "-")
+    .replace(/\s+/g, "-");
+
+  const name = selectedOption.textContent
+    .trim()
+    .toLowerCase();
 
   const slugAliases = {
     "barangay-clearance": "certificate",
@@ -523,7 +530,32 @@ function renderSelectedForm() {
     "barangay-protection-order": "barangay-protection-order"
   };
 
-  const templateKey = slugAliases[slug] || slug;
+  // First try the database slug.
+  let templateKey = slugAliases[slug] || slug;
+
+  // Fall back to the visible request name when the slug is unknown.
+  if (!TEMPLATE_REGISTRY[templateKey]) {
+    if (name.includes("barangay protection order")) {
+      templateKey = "barangay-protection-order";
+    } else if (name.includes("certificate to file action")) {
+      templateKey = "certificate-to-file-action";
+    } else if (name.includes("barangay clearance") ||
+               name.includes("issuance of barangay certificate")) {
+      templateKey = "certificate";
+    } else if (name.includes("residency certificate")) {
+      templateKey = "residency-certificate";
+    } else if (name.includes("business permit endorsement")) {
+      templateKey = "business-permit-endorsement";
+    } else if (name.includes("construction") ||
+               name.includes("work clearance")) {
+      templateKey = "construction-clearance";
+    } else if (name.includes("barangay facilities")) {
+      templateKey = "facility-usage";
+    } else if (name.includes("katarungang")) {
+      templateKey = "katarungang-pambarangay";
+    }
+  }
+
   const template = TEMPLATE_REGISTRY[templateKey];
 
   if (!template || typeof template.render !== "function") {
@@ -536,11 +568,11 @@ function renderSelectedForm() {
     `;
 
     formContainer.querySelector("strong").textContent =
-      selectedOption?.textContent || "this request type";
+      selectedOption.textContent;
 
     console.error("Template not found:", {
       requestTypeId: requestTypeSelect.value,
-      requestName: selectedOption?.textContent,
+      requestName: selectedOption.textContent,
       slug,
       templateKey
     });
@@ -560,6 +592,7 @@ function renderSelectedForm() {
 
   console.log("Rendered template:", templateKey);
 }
+
 
 // ---------- Auto-age calculation from birthday ----------
 function computeAgeFromDOB(dobString) {

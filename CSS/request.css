@@ -193,3 +193,17 @@ h5 {
 #micToggleBtn:focus {
   outline: none;
 }
+
+
+/* Keep decorative background shapes from blocking buttons */
+.bg-patterns {
+  pointer-events: none;
+}
+
+#backBtn {
+  position: relative;
+  z-index: 30;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
