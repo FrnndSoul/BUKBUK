@@ -47,13 +47,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     select.innerHTML = '<option value="">-- Select Request Type --</option>';
 
     data.forEach(item => {
-      const option = document.createElement("option");
+     
+const option = document.createElement("option");
+option.value = item.id;
+option.textContent = item.name;
+option.dataset.slug = item.slug || "";
+select.appendChild(option);
 
-      option.value = item.id;
-      option.textContent = item.name;
-      option.dataset.slug = item.slug || "";
-
-      select.appendChild(option);
     });
 
     applyRequestLanguage(kioskLang);

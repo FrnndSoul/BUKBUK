@@ -477,6 +477,7 @@ const TEMPLATE_REGISTRY = {
    RENDER FORM BASED ON SELECT
 ========================================================= */
 
+
 function renderSelectedForm() {
   if (!requestTypeSelect || !formContainer) return;
 
@@ -496,16 +497,30 @@ function renderSelectedForm() {
     "barangay-clearance": "certificate",
     "barangay-certificate": "certificate",
     "issuance-of-barangay-certificate": "certificate",
+    "certificate": "certificate",
+
     "residency": "residency-certificate",
+    "residency-certificate": "residency-certificate",
+
+    "business-permit-endorsement": "business-permit-endorsement",
+
     "construction": "construction-clearance",
     "construction-clearance": "construction-clearance",
-    "use-of-barangay-facilities": "facility-usage",
+    "construction-work-clearance": "construction-clearance",
+
     "facility": "facility-usage",
+    "facility-usage": "facility-usage",
+    "use-of-barangay-facilities": "facility-usage",
+
     "complaint": "katarungang-pambarangay",
     "complaints": "katarungang-pambarangay",
     "katarungang-pambarangay": "katarungang-pambarangay",
+
     "ctfa": "certificate-to-file-action",
-    "bpo": "barangay-protection-order"
+    "certificate-to-file-action": "certificate-to-file-action",
+
+    "bpo": "barangay-protection-order",
+    "barangay-protection-order": "barangay-protection-order"
   };
 
   const templateKey = slugAliases[slug] || slug;
@@ -513,17 +528,21 @@ function renderSelectedForm() {
 
   if (!template || typeof template.render !== "function") {
     formContainer.innerHTML = `
-      <div class="alert alert-warning mb-0">
+      <div class="alert alert-warning">
         No predefined template is mapped to
-        <strong>${selectedOption?.textContent || "this request type"}</strong>.
-        Please ask the administrator to map this request type
-        to an existing template.
+        <strong></strong>.
+        Please contact the administrator.
       </div>
     `;
 
-    console.warn("No template mapped for request type:", {
+    formContainer.querySelector("strong").textContent =
+      selectedOption?.textContent || "this request type";
+
+    console.error("Template not found:", {
+      requestTypeId: requestTypeSelect.value,
+      requestName: selectedOption?.textContent,
       slug,
-      id: requestTypeSelect.value
+      templateKey
     });
 
     return;
@@ -535,10 +554,13 @@ function renderSelectedForm() {
   wireAutoAge();
   initFormBehaviors();
 
-  if (window.applyAutofillIfAvailable) {
+  if (typeof window.applyAutofillIfAvailable === "function") {
     window.applyAutofillIfAvailable();
   }
+
+  console.log("Rendered template:", templateKey);
 }
+
   const requestTypeId = requestTypeSelect.value;
   if (!requestTypeId) {
     formContainer.innerHTML = ''; // optional: hide form
@@ -864,6 +886,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
  
+
 console.log('✅ script.js connected on request page');
 
 requestTypeSelect.addEventListener('change', renderSelectedForm);
@@ -871,6 +894,7 @@ requestTypeSelect.addEventListener('change', renderSelectedForm);
 if (requestTypeSelect.value) {
   renderSelectedForm();
 }
+
 
 });
 
