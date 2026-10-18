@@ -42,9 +42,12 @@ $stmt = $conn->prepare("
 if (!$stmt) {
     http_response_code(500);
     error_log("get_request_fields.php prepare error: " . $conn->error);
+
     echo json_encode([
-        "error" => "Unable to prepare request query."
+        "error" => "Unable to prepare request query.",
+        "details" => $conn->error
     ]);
+
     exit;
 }
 
