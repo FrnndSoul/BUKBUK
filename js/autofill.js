@@ -1,5 +1,6 @@
 // autofill.js
 // Responsible only for mapping scanned ID data into form fields
+// autofill.js
 
 (function () {
   function autofillForm(formEl, data) {

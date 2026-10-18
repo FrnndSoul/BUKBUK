@@ -15,7 +15,17 @@ body {
   align-items: center;
 }
 
-/* Floating shapes */
+#confirmDetails {
+  max-height: 50vh;
+  overflow-y: auto;
+  font-size: 0.95rem;
+}
+
+
+
+/* =========================================
+   Floating Shapes Background
+   ========================================= */
 .bg-patterns {
   position: fixed;
   inset: 0;
@@ -34,104 +44,51 @@ body {
   position: absolute;
   opacity: 0.35;
   pointer-events: none;
+  animation: float linear infinite;
 }
 
 .circle {
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.6) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, transparent 70%);
 }
 
 .triangle {
   width: 50px;
   height: 50px;
-  background: linear-gradient(45deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
+  background: linear-gradient(45deg, rgba(255,255,255,0.5), rgba(255,255,255,0));
   clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
 }
 
 .star {
   width: 30px;
   height: 30px;
-  background: linear-gradient(45deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0));
-  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  background: linear-gradient(45deg, rgba(255,255,255,0.7), rgba(255,255,255,0));
+  clip-path: polygon(
+    50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%,
+    50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%
+  );
 }
 
 @keyframes float {
-  0% {
-    transform: translateY(0) rotate(0deg) scale(1);
-  }
-
-  50% {
-    transform: translateY(-25px) rotate(180deg) scale(1.1);
-  }
-
-  100% {
-    transform: translateY(0) rotate(360deg) scale(1);
-  }
-}
-
-.circle,
-.triangle,
-.star {
-  animation: float linear infinite;
+  0% { transform: translateY(0) rotate(0deg) scale(1); }
+  50% { transform: translateY(-25px) rotate(180deg) scale(1.1); }
+  100% { transform: translateY(0) rotate(360deg) scale(1); }
 }
 
 /* Shape Positions */
-.c1 {
-  width: 200px;
-  height: 200px;
-  top: 5%;
-  left: 10%;
-  animation-duration: 14s;
-  animation-delay: 0s;
-}
+.c1 { width:200px;height:200px;top:5%;left:10%;animation-duration:14s; }
+.c2 { width:150px;height:150px;bottom:10%;right:15%;animation-duration:12s; }
+.c3 { width:180px;height:180px;top:60%;left:5%;animation-duration:16s; }
 
-.c2 {
-  width: 150px;
-  height: 150px;
-  bottom: 10%;
-  right: 15%;
-  animation-duration: 12s;
-  animation-delay: 3s;
-}
+.t1 { top:20%;left:30%;animation-duration:13s; }
+.t2 { bottom:15%;right:35%;animation-duration:15s; }
 
-.c3 {
-  width: 180px;
-  height: 180px;
-  top: 60%;
-  left: 5%;
-  animation-duration: 16s;
-  animation-delay: 6s;
-}
+.s1 { top:10%;right:20%;animation-duration:11s; }
+.s2 { bottom:20%;left:25%;animation-duration:17s; }
 
-.t1 {
-  top: 20%;
-  left: 30%;
-  animation-duration: 13s;
-  animation-delay: 2s;
-}
-
-.t2 {
-  bottom: 15%;
-  right: 35%;
-  animation-duration: 15s;
-  animation-delay: 5s;
-}
-
-.s1 {
-  top: 10%;
-  right: 20%;
-  animation-duration: 11s;
-  animation-delay: 1s;
-}
-
-.s2 {
-  bottom: 20%;
-  left: 25%;
-  animation-duration: 17s;
-  animation-delay: 4s;
-}
-
-/* Main Dashboard */
+/* =========================================
+   Main Dashboard
+   ========================================= */
 main {
   position: relative;
   z-index: 2;
@@ -148,10 +105,10 @@ main {
   border-radius: 50%;
   overflow: hidden;
   border: 4px solid #d8ffe2;
+  background: #ffffff22;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #ffffff22;
   margin-bottom: 1.5rem;
 }
 
@@ -159,14 +116,13 @@ main {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 50%;
 }
 
 h1,
 .subtitle,
 .note {
   color: #fff;
-  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
 }
 
 h1 {
@@ -181,14 +137,16 @@ h1 {
   margin-bottom: 1rem;
 }
 
-/* Buttons */
+/* =========================================
+   Buttons
+   ========================================= */
 .btn {
   font-size: 1.8rem;
   padding: 18px 40px;
   border-radius: 12px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-  color: #fff;
   border: none;
+  color: #fff;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .btn-primary {
@@ -198,7 +156,7 @@ h1 {
 .btn-primary:hover {
   background-color: #00b37a;
   transform: scale(1.05);
-  box-shadow: 0 6px 15px rgba(255, 255, 255, 0.35);
+  box-shadow: 0 6px 15px rgba(255,255,255,0.35);
 }
 
 .btn-secondary {
@@ -208,26 +166,28 @@ h1 {
 .btn-secondary:hover {
   background-color: #009e60;
   transform: scale(1.05);
-  box-shadow: 0 6px 15px rgba(255, 255, 255, 0.35);
+  box-shadow: 0 6px 15px rgba(255,255,255,0.35);
 }
 
-/* Accessibility */
+/* =========================================
+   Accessibility Button & Menu
+   ========================================= */
 .accessibility-btn {
   position: fixed;
   bottom: 20px;
   left: 20px;
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
   background-color: #006b3c;
   color: white;
   border: none;
-  border-radius: 50%;
-  width: 55px;
-  height: 55px;
+  cursor: pointer;
+  z-index: 10;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
-  cursor: pointer;
-  z-index: 10;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.3);
   transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
@@ -243,11 +203,30 @@ h1 {
   background: #ffffffee;
   color: #222;
   border-radius: 12px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.25);
   padding: 10px;
-  display: none;
   width: 220px;
+  display: none;
   z-index: 9;
+}
+
+/* Show toggle */
+.accessibility-menu.show {
+  display: flex;
+  flex-direction: column;
+  animation: fadeIn 0.25s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.accessibility-menu p {
+  margin: 5px 10px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #006b3c;
 }
 
 .accessibility-menu button {
@@ -257,27 +236,36 @@ h1 {
   width: 100%;
   background: none;
   border: none;
-  text-align: left;
-  padding: 10px;
+  padding: 12px;
   font-size: 1.25rem;
   color: #333;
   border-radius: 6px;
+  cursor: pointer;
 }
 
 .accessibility-menu button:hover {
-  background: #f0f0f0;
+  background: #e0f5ea;
 }
 
-/* Idle Screen */
+/* Language Buttons */
+.lang-btn {
+  font-weight: 600;
+  font-size: 1.3rem;
+  border-radius: 8px;
+}
+
+/* =========================================
+   Idle Screen
+   ========================================= */
 .idle-screen {
   position: fixed;
   inset: 0;
   display: none;
   z-index: 20;
+  background: linear-gradient(160deg, #2e8b57, #3cb371, #00b37a);
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  background: linear-gradient(160deg, #2e8b57, #3cb371, #00b37a);
 }
 
 .idle-content {
@@ -285,13 +273,12 @@ h1 {
   z-index: 1;
   text-align: center;
   color: #fff;
-  text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.5);
+  text-shadow: 1px 1px 6px rgba(0,0,0,0.5);
 }
 
 .idle-content h1 {
   font-size: 4rem;
   font-weight: bold;
-  margin-bottom: 10px;
 }
 
 .idle-content .welcome-text {
@@ -305,45 +292,47 @@ h1 {
   margin-bottom: 20px;
 }
 
-/* Responsive */
-@media(max-width:480px) {
-  body {
-    font-size: 1rem;
-  }
+/* =========================================
+   Responsive
+   ========================================= */
+@media (max-width: 480px) {
+  body { font-size: 1rem; }
 
-  main {
-    padding: 1rem;
-  }
+  .logo { width: 140px; height: 140px; }
 
-  .logo {
-    width: 140px;
-    height: 140px;
-  }
+  h1 { font-size: 2.2rem; }
 
-  h1 {
-    font-size: 2.2rem;
-  }
-
-  .subtitle,
-  .note {
-    font-size: 1.2rem;
-  }
+  .subtitle, .note { font-size: 1.2rem; }
 
   .btn {
     font-size: 1.4rem;
     padding: 12px 30px;
   }
 
-  .idle-content h1 {
-    font-size: 2.5rem;
-  }
+  .idle-content h1 { font-size: 2.5rem; }
+  .idle-content .welcome-text { font-size: 1.5rem; }
+  .idle-content .logo { width: 160px; height: 160px; }
+}
 
-  .idle-content .welcome-text {
-    font-size: 1.5rem;
-  }
+/* ===== Flatpickr kiosk-safe styling ===== */
+.flatpickr-calendar {
+  font-size: 14px;
+}
 
-  .idle-content .logo {
-    width: 160px;
-    height: 160px;
-  }
+.flatpickr-months {
+  font-size: 14px;
+}
+
+.flatpickr-current-month {
+  font-size: 14px;
+}
+
+.flatpickr-weekday {
+  font-size: 12px;
+}
+
+.flatpickr-day {
+  height: 38px;
+  line-height: 38px;
+  max-width: 38px;
 }

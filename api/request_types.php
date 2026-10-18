@@ -2,7 +2,8 @@
 header('Content-Type: application/json');
 
 // $conn = new mysqli("localhost", "root", "", "barangayadmin_db");
-$conn = new mysqli("153.92.15.84","u279021732_brgyugong","Ds#XH1I#t","u279021732_brgyugong");
+$conn = new mysqli("153.92.15.84","u279021732_brgyadmin_db","JYEj8JIW8w*","u279021732_brgyadmin_db");
+// HOST, USERNAME, PASSWORD, DATABASE
 
 if ($conn->connect_error) {
   http_response_code(500);

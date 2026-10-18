@@ -15,6 +15,7 @@
   align-items: flex-start;
   color: #ffffff;
 }
+/* Floating shapes */
 
 /* Prevent global body rules from breaking layout */
 .status-page * {
@@ -99,6 +100,17 @@
 .status-page .info-box p {
   font-size: clamp(1rem, 2.6vw, 1.6rem);
   color: #e8f5e9;
+}
+
+/* ==============================
+   STATUS TEXT (NEW)
+   ============================== */
+.status-page .status-text {
+  font-size: 2rem;        /* increase size */
+  font-weight: 700;       /* bold */
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  color: #ffffff;
 }
 
 /* ==============================

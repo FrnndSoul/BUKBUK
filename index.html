@@ -1,9 +1,11 @@
+
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Barangay Ugong Kiosk Request</title>
+  <!-- sample -->
 
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -46,12 +48,23 @@
     <i class="bi bi-universal-access fs-4"></i>
   </button>
 
-  <!-- Accessibility Menu -->
-  <div class="accessibility-menu" id="accessibilityMenu">
-    <button id="increaseText"><i class="bi bi-type fs-5"></i> Increase Text Size</button>
-    <button id="readAloud"><i class="bi bi-volume-up fs-5"></i> Read Aloud</button>
-    <button id="speechToText"><i class="bi bi-mic fs-5"></i> Speech to Text</button>
-  </div>
+ <!-- Accessibility Menu -->
+<div class="accessibility-menu" id="accessibilityMenu">
+  <p class="fw-bold mb-2">Select Language</p>
+
+  <button class="lang-btn" data-lang="en">
+    🇺🇸 English
+  </button>
+
+  <button class="lang-btn" data-lang="tl">
+    🇵🇭 Tagalog
+  </button>
+
+  <hr>
+
+ 
+</div>
+
 
   <!-- Idle Screen -->
   <div id="idleScreen" class="idle-screen">
@@ -76,6 +89,7 @@
   </div>
 
   <!-- JS -->
+   
   <script src="js/index.js"></script>
 </body>
 </html>

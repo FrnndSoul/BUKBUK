@@ -1,32 +1,31 @@
 <?php
 header('Content-Type: application/json');
-// $conn = new mysqli("localhost","root","","barangayadmin_db");
-$conn = new mysqli("153.92.15.84","u279021732_brgyugong","Ds#XH1I#t","u279021732_brgyugong");
 
+// $conn = new mysqli("localhost", "root", "", "barangayadmin_db");
+$conn = new mysqli("153.92.15.84","u279021732_brgyadmin_db","JYEj8JIW8w*","u279021732_brgyadmin_db");
 // HOST, USERNAME, PASSWORD, DATABASE
 
-$typeId = $_GET['request_type_id'] ?? 0;
 
-$sql = "
-SELECT 
-  f.field_key,
-  f.label,
-  f.field_type,
-  f.is_required
-FROM request_type_fields rtf
-JOIN form_fields f ON rtf.field_id = f.id
-WHERE rtf.request_type_id = ?
-ORDER BY rtf.field_order ASC
-";
+$id = intval($_GET['request_type_id'] ?? 0);
 
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $typeId);
+$stmt = $conn->prepare("
+  SELECT request_sections
+  FROM request_types
+  WHERE id = ? AND is_active = 1
+");
+$stmt->bind_param("i", $id);
 $stmt->execute();
-$result = $stmt->get_result();
 
-$fields = [];
-while ($row = $result->fetch_assoc()) {
-  $fields[] = $row;
+$row = $stmt->get_result()->fetch_assoc();
+
+$sections = [];
+if ($row && $row['request_sections']) {
+  $decoded = json_decode($row['request_sections'], true);
+  if (is_array($decoded)) {
+    $sections = $decoded;
+  }
 }
 
-echo json_encode($fields);
+echo json_encode([
+  "request_sections" => $sections
+]);

@@ -1,3 +1,5 @@
+console.log("✅ script.js loaded");
+
 // ---------- Utils ----------
 let requestTypeSelect;
 let formContainer;
@@ -7,38 +9,17 @@ let currentInput = null;
 let _bdayChangeHandler = null;
 let _ageInputHandler = null;
 
-document.addEventListener("DOMContentLoaded", () => {
-  const select = document.getElementById("requestTypeSelect")
-  const container = document.getElementById("formContainer")
-
-  if (!select || !container) return
-
-  select.addEventListener("change", () => {
-    const id = select.value
-    if (!id) {
-      container.innerHTML = ""
-      container.style.display = "none"
-      return
-    }
-
-    container.style.display = "block"
-
-    fetch(`../api/get_request_fields.php?request_type_id=${id}`)
-      .then(r => r.json())
-      .then(f => renderDynamicKioskForm(f))
-  })
-})
-
-
 // --- Helper utilities (kept from your original) ---
-function randRef() {
-  const d = new Date();
-  const pad = (n) => String(n).padStart(2, '0');
-  const ts = d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + pad(d.getHours()) + pad(d.getMinutes()) + pad(d.getSeconds());
-  const rnd = Math.floor(1000 + Math.random() * 9000);
-  return `REF-${ts}-${rnd}`;
-}
+let currentRef = null;
 
+// function randRef() {
+//   if (currentRef) return currentRef;
+
+//   const array = new Uint32Array(1);
+//   crypto.getRandomValues(array);
+//   currentRef = array[0].toString(16).padStart(8, '0').toUpperCase();
+//   return currentRef;
+// }
 function toUpperHandler(e) {
   // transform caret-safe uppercase
   const start = e.target.selectionStart, end = e.target.selectionEnd;
@@ -64,88 +45,34 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function initializeDatePickers() {
   flatpickr("input[type='date']", {
-    static: true,   // Makes the calendar appear as a static popup instead of a dropdown
-    locale: "en",   // Set the locale if needed (optional)
-    dateFormat: "m/d/Y", // Set your date format (e.g., mm/dd/yyyy)
-    position: "auto", // Position the calendar popup automatically
+    dateFormat: "m/d/Y",
+    maxDate: "today",
+    disableMobile: true,
 
-    // onReady is called after the calendar is initialized
-    onReady: function (selectedDates, dateStr, instance) {
-      const calendar = instance.calendarContainer; // Get the calendar container
-      const dateInput = instance.input;  // Get the input field that triggered the calendar
+    onChange: function (selectedDates, dateStr, instance) {
+      const input = instance.input;
 
-      // Custom style for the calendar popup
-      calendar.style.width = "400px";  // Set calendar popup width
-      calendar.style.height = "450px"; // Set calendar popup height
-      calendar.style.overflow = "hidden"; // Prevent overflow and ensure it fits the container
+      // ✅ Only react if this is the birthday field
+      if (input.id !== "bday") return;
 
-      // Adjust the width of the date input field
-      dateInput.style.width = "400px"; // Set your desired width here
+      const ageInput = document.getElementById("age");
+      if (!ageInput || !selectedDates.length) return;
 
-      // Ensure the internal elements (month, year, and days) adjust accordingly
-      const monthNav = calendar.querySelector('.flatpickr-month'); // Navigation bar for month/year
-      const daysContainer = calendar.querySelector('.flatpickr-days'); // Container for the days grid
-      const dayCells = daysContainer.querySelectorAll('.flatpickr-day'); // Day cells
+      const birthDate = selectedDates[0];
+      const today = new Date();
 
-      // Adjust the font size of the month and year display
-      if (monthNav) {
-        monthNav.style.fontSize = "25px"; // Adjust the font size of month/year text
-        monthNav.style.height = "60px"; // Set a fixed height to match day cells
-        monthNav.style.lineHeight = "60px"; // Vertically center the month text
-        monthNav.style.padding = "0 10px"; // Add some horizontal padding to prevent cutoff
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const m = today.getMonth() - birthDate.getMonth();
 
-        // Use Flexbox to center the month/year horizontally
-        monthNav.style.display = "flex";
-        monthNav.style.justifyContent = "center";  // Centers the content horizontally
-        monthNav.style.alignItems = "center";  // Centers the content vertically
-
-        // Hide the year input box (up/down arrows)
-        const yearElement = monthNav.querySelector('.flatpickr-year');
-        if (yearElement) {
-          yearElement.style.display = "none";  // Hide the native year input field
-        }
-
-        // Add event listener to year to display a list of years when clicked
-        const yearLabel = monthNav.querySelector('.flatpickr-current-month');
-        yearLabel.addEventListener('click', function () {
-          showYearDropdown(instance, yearLabel);  // Show the year dropdown when the year is clicked
-        });
-
-        // Hide the arrow buttons (if you don't need them)
-        const arrowButtons = monthNav.querySelectorAll('.flatpickr-prev-month, .flatpickr-next-month');
-        arrowButtons.forEach(button => button.style.display = 'none');
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
       }
 
-      // Adjust the size of the days container and cells to fit the new calendar size
-      daysContainer.style.fontSize = "25px"; // Adjust text size of days
-      daysContainer.style.gridTemplateColumns = "repeat(7, 1fr)"; // Make sure the days grid fits well in 400px width
-
-      // Adjust the size of the individual day cells
-      dayCells.forEach(day => {
-        day.style.fontSize = "18px"; // Set the font size of the days inside the calendar
-        day.style.height = "60px"; // Set a fixed height for day cells
-        day.style.width = "60px";  // Set a fixed width for day cells
-        day.style.lineHeight = "60px"; // Vertically center the text inside day cells
-        day.style.textAlign = "center"; // Center the text horizontally inside each day cell
-      });
-
-      // Ensure the calendar stays open while interacting with it
-      dateInput.addEventListener('focus', function () {
-        calendar.style.display = "block";  // Ensure the calendar stays open on focus
-      });
-
-      // Prevent calendar from closing when interacting with input (e.g., selecting date)
-      dateInput.addEventListener('click', function (event) {
-        event.stopPropagation();  // Prevent calendar from closing when clicking on input
-      });
-
-      // Prevent calendar from closing when selecting a date on the calendar (if necessary)
-      calendar.addEventListener('click', function (event) {
-        event.stopPropagation();  // Prevent the calendar from closing on date selection
-      });
+      ageInput.value = age;
     }
   });
 }
+
 
 // Function to display a list of years
 function showYearDropdown(instance, yearElement) {
@@ -551,7 +478,10 @@ const TEMPLATE_REGISTRY = {
 ========================================================= */
 function renderSelectedForm() {
   const requestTypeId = requestTypeSelect.value;
-  if (!requestTypeId) return;
+  if (!requestTypeId) {
+    formContainer.innerHTML = ''; // optional: hide form
+    return;
+  }
 
   fetch(`../api/get_request_fields.php?request_type_id=${requestTypeId}`)
     .then(res => res.json())
@@ -561,13 +491,19 @@ function renderSelectedForm() {
         return;
       }
 
+      // 1️⃣ Render the form HTML
       renderDynamicKioskForm(fields);
+
+      initializeDatePickers(); // ← keeps flatpickr working
+      wireAutoAge();       // ← wire up bday -> age behavior
+      initFormBehaviors();
     })
     .catch(err => {
       console.error(err);
       formContainer.innerHTML = '<p class="text-danger">Failed to load form.</p>';
     });
 }
+
 
 // ---------- Auto-age calculation from birthday ----------
 function computeAgeFromDOB(dobString) {
@@ -587,79 +523,18 @@ function computeAgeFromDOB(dobString) {
 
 // call this function to wire up the bday -> age behavior
 function wireAutoAge() {
-  const bday = document.getElementById('bday');
-  const age = document.getElementById('age');
-  if (!bday || !age) return;
+  const bdayInput = document.getElementById("bday");
+  const ageInput = document.getElementById("age");
 
-  // keep age editable
-  age.readOnly = false;
+  if (!bdayInput || !ageInput) return;
 
-  // compute on load if bday exists
-  if (bday.value) {
-    const a = computeAgeFromDOB(bday.value);
-    if (a !== '' && (age.value === '' || Number(age.value) !== a)) {
-      age.value = String(a);
-    }
-  }
-
-  // remove previous handlers if any
-  if (_bdayChangeHandler) {
-    bday.removeEventListener('change', _bdayChangeHandler);
-    bday.removeEventListener('input', _bdayChangeHandler);
-  }
-  if (_ageInputHandler) {
-    age.removeEventListener('input', _ageInputHandler);
-  }
-
-  // When birthday changes — always correct the age to computed value.
-  _bdayChangeHandler = function () {
-    const computed = computeAgeFromDOB(bday.value);
-    if (computed === '') return; // ignore invalid / future date
-
-    // if the typed age differs (or empty) — overwrite with computed value
-    if (age.value === '' || Number(age.value) !== computed) {
-      age.value = String(computed);
-
-      // subtle visual feedback: flash light green briefly
-      const origBg = age.style.backgroundColor || '';
-      age.style.transition = 'background-color 0.22s';
-      age.style.backgroundColor = '#d4edda'; // success-ish flash
-      setTimeout(() => {
-        age.style.backgroundColor = origBg;
-      }, 450);
-      // remove any 'invalid' highlight if present
-      unmarkInvalid(age);
-    }
-  };
-
-  // When user types into age: allow editing but show a warning if it doesn't match the currently entered birthday
-  _ageInputHandler = function () {
-    // if no birthday, nothing to validate against
-    if (!bday.value) {
-      age.classList.remove('is-required-invalid');
-      return;
-    }
-    const computed = computeAgeFromDOB(bday.value);
-    if (computed === '') {
-      age.classList.remove('is-required-invalid');
-      return;
-    }
-
-    const typed = Number(age.value);
-    if (!Number.isFinite(typed) || typed !== computed) {
-      // indicate mismatch but do not overwrite here
-      // use your existing invalid style to make it noticeable
-      markInvalid(age);
-    } else {
-      unmarkInvalid(age);
-    }
-  };
-
-  // attach listeners
-  bday.addEventListener('change', _bdayChangeHandler);
-  bday.addEventListener('input', _bdayChangeHandler);
-  age.addEventListener('input', _ageInputHandler);
+  bdayInput.addEventListener("change", () => {
+    const age = computeAgeFromDOB(bdayInput.value);
+    ageInput.value = age !== "" ? age : "";
+  });
 }
+
+
 // ---------- Form Behaviors (fixed) ----------
 let _globalDocClickHandler = null;
 let _focusInHandler = null;
@@ -672,15 +547,15 @@ function initFormBehaviors() {
   const formEl = document.getElementById('activeForm');
   if (!formEl) return;
 
-  // Remove old listeners safely
-  const cleanForm = formEl.cloneNode(true);
-  formEl.replaceWith(cleanForm);
+  // prevent duplicate submit handlers safely
+  formEl.onsubmit = null;
 
-  cleanForm.addEventListener('submit', (e) => {
+  formEl.addEventListener('submit', (e) => {
     e.preventDefault();
-    validateAndConfirm(cleanForm);
+    validateAndConfirm(formEl);
   });
 }
+
 
 /* =========================================================
    VALIDATION + CONFIRMATION
@@ -731,11 +606,20 @@ function validateAndConfirm(formEl) {
 
   // ---------- CONFIRM MODAL ----------
   const modalEl = document.getElementById('confirmModal');
-  const confirmModal = bootstrap.Modal.getOrCreateInstance(modalEl);
+  // const confirmModal = bootstrap.Modal.getOrCreateInstance(modalEl);
   console.log('✅ validation passed, showing confirm modal');
   const confirmNo = modalEl.querySelector('#confirmNo');
   const confirmYes = modalEl.querySelector('#confirmYes');
+
+  window._pendingForm = formEl;
+  populateConfirmDetails(formEl);
+
+  const confirmModal = new bootstrap.Modal(
+    document.getElementById("confirmModal")
+  );
+
   confirmModal.show();
+
 
   // remove old listeners
   confirmNo.replaceWith(confirmNo.cloneNode(true));
@@ -747,16 +631,97 @@ function validateAndConfirm(formEl) {
 
   modalEl.querySelector('#confirmYes').addEventListener('click', () => {
     confirmModal.hide();
+    submitRequest(formEl, true)
     showSummary(formEl);
   });
 }
+
+function populateConfirmDetails() {
+  const formEl = document.querySelector("#activeForm");
+  const container = document.getElementById("confirmDetails");
+
+  if (!formEl || !container) {
+    console.error("❌ confirmDetails container not found");
+    return;
+  }
+
+  let html = `<ul class="list-group list-group-flush">`;
+
+  Array.from(formEl.elements).forEach(el => {
+    if (!el.name || el.type === "submit") return;
+    if (el.type === "radio" && !el.checked) return;
+
+    const value = el.value?.trim() || "(blank)";
+
+    const label =
+      formEl.querySelector(`label[for="${el.id}"]`)?.innerText ||
+      el.name.replace(/_/g, " ").toUpperCase();
+
+    html += `
+      <li class="list-group-item d-flex justify-content-between">
+        <strong>${label}</strong>
+        <span>${value}</span>
+      </li>
+    `;
+  });
+
+  html += `</ul>`;
+  container.innerHTML = html;
+}
+
+
+
+function submitRequest(formEl, showSummaryAfter = false) {
+  const fields = {};
+
+  Array.from(formEl.elements).forEach(el => {
+    if (!el.name || el.type === "submit") return;
+
+    if (el.type === "radio") {
+      if (el.checked) fields[el.name] = el.value;
+    } else {
+      fields[el.name] = el.value;
+    }
+  });
+
+  const payload = {
+    type_id: requestTypeSelect.value,
+    fields
+  };
+
+  fetch("../api/submit_request.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (!data.success) {
+        alert(data.message || "Submission failed");
+        return;
+      }
+
+      if (showSummaryAfter) {
+        showSummary(formEl, data.ref_number);
+      }
+
+      formEl.reset();
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Server error");
+    });
+}
+
+
 
 
 /* =========================================================
    SUMMARY + PRINT
 ========================================================= */
-function showSummary(formEl) {
-  const ref = randRef();
+function showSummary(formEl, refNumber) {
+  // const ref = randRef();
+  const ref = refNumber;
   const summaryBody = document.getElementById('summaryBody');
   const entries = {};
 
@@ -836,16 +801,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   console.log('✅ script.js connected on request page');
 
-  requestTypeSelect.addEventListener('change', renderSelectedForm);
+  // requestTypeSelect.addEventListener('change', renderSelectedForm);
 
   if (requestTypeSelect.value) {
     renderSelectedForm();
   }
 });
 
+
+// autofill.js
+
 function renderDynamicKioskForm(fields) {
-  const form = document.createElement("form");
-  form.id = "activeForm";
+  const form = document.getElementById("activeForm");
+  if (!form) return;
   form.noValidate = true;
 
   fields.forEach(f => {
@@ -886,7 +854,7 @@ function renderDynamicKioskForm(fields) {
 
   formContainer.innerHTML = "";
   formContainer.appendChild(form);
-  
+
   initFormBehaviors();
   initializeDatePickers();
 

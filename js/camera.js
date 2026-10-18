@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
     video.srcObject = stream
     await video.play()
   }
+// autofill.js
 
   function closeCamera() {
     if (!stream) return
@@ -55,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const image = canvas.toDataURL("image/jpeg")
 
     try {
-      const res = await fetch("https://backend-production-79ea.up.railway.app/scan", {
+      const res = await fetch("https://backend-gol6.onrender.com/scan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ image })
