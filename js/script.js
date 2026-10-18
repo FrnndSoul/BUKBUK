@@ -476,7 +476,69 @@ const TEMPLATE_REGISTRY = {
 /* =========================================================
    RENDER FORM BASED ON SELECT
 ========================================================= */
+
 function renderSelectedForm() {
+  if (!requestTypeSelect || !formContainer) return;
+
+  const selectedOption =
+    requestTypeSelect.options[requestTypeSelect.selectedIndex];
+
+  const slug = (selectedOption?.dataset.slug || "")
+    .trim()
+    .toLowerCase();
+
+  if (!requestTypeSelect.value) {
+    formContainer.innerHTML = "";
+    return;
+  }
+
+  const slugAliases = {
+    "barangay-clearance": "certificate",
+    "barangay-certificate": "certificate",
+    "issuance-of-barangay-certificate": "certificate",
+    "residency": "residency-certificate",
+    "construction": "construction-clearance",
+    "construction-clearance": "construction-clearance",
+    "use-of-barangay-facilities": "facility-usage",
+    "facility": "facility-usage",
+    "complaint": "katarungang-pambarangay",
+    "complaints": "katarungang-pambarangay",
+    "katarungang-pambarangay": "katarungang-pambarangay",
+    "ctfa": "certificate-to-file-action",
+    "bpo": "barangay-protection-order"
+  };
+
+  const templateKey = slugAliases[slug] || slug;
+  const template = TEMPLATE_REGISTRY[templateKey];
+
+  if (!template || typeof template.render !== "function") {
+    formContainer.innerHTML = `
+      <div class="alert alert-warning mb-0">
+        No predefined template is mapped to
+        <strong>${selectedOption?.textContent || "this request type"}</strong>.
+        Please ask the administrator to map this request type
+        to an existing template.
+      </div>
+    `;
+
+    console.warn("No template mapped for request type:", {
+      slug,
+      id: requestTypeSelect.value
+    });
+
+    return;
+  }
+
+  formContainer.innerHTML = template.render();
+
+  initializeDatePickers();
+  wireAutoAge();
+  initFormBehaviors();
+
+  if (window.applyAutofillIfAvailable) {
+    window.applyAutofillIfAvailable();
+  }
+}
   const requestTypeId = requestTypeSelect.value;
   if (!requestTypeId) {
     formContainer.innerHTML = ''; // optional: hide form
@@ -502,7 +564,9 @@ function renderSelectedForm() {
       console.error(err);
       formContainer.innerHTML = '<p class="text-danger">Failed to load form.</p>';
     });
-}
+
+  
+
 
 
 // ---------- Auto-age calculation from birthday ----------
@@ -799,13 +863,15 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  console.log('✅ script.js connected on request page');
+ 
+console.log('✅ script.js connected on request page');
 
-  // requestTypeSelect.addEventListener('change', renderSelectedForm);
+requestTypeSelect.addEventListener('change', renderSelectedForm);
 
-  if (requestTypeSelect.value) {
-    renderSelectedForm();
-  }
+if (requestTypeSelect.value) {
+  renderSelectedForm();
+}
+
 });
 
 
