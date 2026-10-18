@@ -561,11 +561,7 @@ function renderSelectedForm() {
   console.log("Rendered template:", templateKey);
 }
 
-  const requestTypeId = requestTypeSelect.value;
-  if (!requestTypeId) {
-    formContainer.innerHTML = ''; // optional: hide form
-    return;
-  }
+
 
   fetch(`../api/get_request_fields.php?request_type_id=${requestTypeId}`)
     .then(res => res.json())
