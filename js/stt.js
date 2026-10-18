@@ -34,7 +34,7 @@ if (micBtn) {
 
             // 1. STT
             const sttRes = await fetch(
-              "https://backend-production-79ea.up.railway.app/stt",
+              "https://backend-gol6.onrender.com/stt",
               {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -62,7 +62,7 @@ if (micBtn) {
 
             // 3. Correction request
             const fixRes = await fetch(
-              "https://backend-production-79ea.up.railway.app/correct",
+              "https://backend-gol6.onrender.com/correct",
               {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
