@@ -336,3 +336,20 @@ h1 {
   line-height: 38px;
   max-width: 38px;
 }
+
+
+/* App version: tiny and centered */
+.app-version {
+    position: fixed;
+    left: 50%;
+    bottom: 5px;
+    transform: translateX(-50%);
+    font-size: 8px;
+    line-height: 1;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.6);
+    text-align: center;
+    white-space: nowrap;
+    z-index: 9999;
+    pointer-events: none;
+}
