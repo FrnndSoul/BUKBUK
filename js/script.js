@@ -593,6 +593,8 @@ function renderSelectedForm() {
   console.log("Rendered template:", templateKey);
 }
 
+window.renderSelectedForm = renderSelectedForm;
+
 
 // ---------- Auto-age calculation from birthday ----------
 function computeAgeFromDOB(dobString) {

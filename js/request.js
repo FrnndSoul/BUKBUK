@@ -31,32 +31,38 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     if (!response.ok) {
-      throw new Error(
-        `Request types API returned HTTP ${response.status}`
-      );
+      throw new Error(`Request types API returned HTTP ${response.status}`);
     }
 
     const data = await response.json();
 
     if (!Array.isArray(data)) {
-      throw new Error(
-        data.error || "Unexpected request types response"
-      );
+      throw new Error(data.error || "Unexpected request types response");
     }
 
-    select.innerHTML = '<option value="">-- Select Request Type --</option>';
+    select.innerHTML =
+      '<option value="">-- Select Request Type --</option>';
 
     data.forEach(item => {
-     
-const option = document.createElement("option");
-option.value = item.id;
-option.textContent = item.name;
-option.dataset.slug = item.slug || "";
-select.appendChild(option);
-
+      const option = document.createElement("option");
+      option.value = item.id;
+      option.textContent = item.name;
+      option.dataset.slug = item.slug || "";
+      select.appendChild(option);
     });
 
     applyRequestLanguage(kioskLang);
+
+    // Render the matching existing template when the selection changes.
+    select.addEventListener("change", () => {
+      if (typeof window.renderSelectedForm === "function") {
+        window.renderSelectedForm();
+      } else {
+        console.error(
+          "renderSelectedForm() is not available. Check script.js."
+        );
+      }
+    });
 
     console.log("Request types loaded:", data);
   } catch (error) {
